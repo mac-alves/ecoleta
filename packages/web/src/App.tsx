@@ -1,11 +1,14 @@
 import React from 'react';
 import './App.css';
+import { Container } from './styles/global';
 
-function App() {
+import Routes from './routes';
+
+const App: React.FC = () => {
   return (
-    <div>
-      
-    </div>
+    <Container>
+      <Routes />
+    </Container>
   );
 }
 
