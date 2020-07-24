@@ -8,6 +8,7 @@ import logo from '../../assets/img/logo.svg';
 import { api, axios } from '../../services/api';
 import { LeafletMouseEvent } from 'leaflet';
 import ModalChecked from '../../components/ModalChecked';
+import DropZone from '../../components/DropZone';
 
 interface Item {
   id: number;
@@ -29,12 +30,13 @@ const CreatePoint: React.FC = () => {
   const [ selectedPosition, setSelectedPosition ] = useState<[number, number]>([ 0, 0 ]);
   const [ initialPosition, setInitialPosition ] = useState<[number, number]>([ -2.5004548, -44.2763225 ]);
   const [ selectedItems, setSelectedItems ] = useState<number[]>([]);
+  const [ selectedFile, setSelectedFile ] = useState<File>();
   const [ formData, setFormData ] = useState({
     name: '',
     email: '',
     whatsapp: ''
   });
-  const [ submitOk, setSubmitOk ] = useState(true);
+  const [ submitOk, setSubmitOk ] = useState(false);
 
   const getItems = useCallback(async () => {
     const response = await api.get('items');
@@ -92,15 +94,18 @@ const CreatePoint: React.FC = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    const data = {
-      name: formData.name,
-      email: formData.email,
-      whatsapp: formData.whatsapp,
-      uf: selectedUf,
-      city: selectedCity,
-      latitude: selectedPosition[0],
-      longitude: selectedPosition[1],
-      items: selectedItems,
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('email', formData.email);
+    data.append('whatsapp', formData.whatsapp);
+    data.append('uf', selectedUf);
+    data.append('city', String(selectedCity));
+    data.append('latitude', String(selectedPosition[0]));
+    data.append('longitude', String(selectedPosition[1]));
+    data.append('items', selectedItems.join(','));
+    
+    if (selectedFile){
+      data.append('image', selectedFile);
     }
 
     try {
@@ -146,6 +151,8 @@ const CreatePoint: React.FC = () => {
 
         <form onSubmit={handleSubmit}>
           <h1>Cadastro do <br/> ponto de coleta</h1>
+
+          <DropZone onFileUpload={setSelectedFile} />
 
           <fieldset>
             <legend>
