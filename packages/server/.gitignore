@@ -119,3 +119,7 @@ dist
 
 .vscode
 package-lock.json
+
+*.jpeg
+*.jpg
+*.png
