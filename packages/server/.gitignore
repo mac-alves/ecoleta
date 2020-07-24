@@ -120,6 +120,8 @@ dist
 .vscode
 package-lock.json
 
+!uploads/.gitkeep
+
 *.jpeg
 *.jpg
 *.png
