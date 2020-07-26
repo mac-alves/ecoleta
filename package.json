@@ -1,0 +1,16 @@
+{
+  "name": "ecoleta",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "author": "mac-alves <mauricio.bleck7@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.9.7"
+  }
+}

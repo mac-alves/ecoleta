@@ -1,10 +1,10 @@
 {
-  "name": "server",
+  "name": "@ecoleta/server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --transpileOnly --no-notify --ignore-watch node_modules src/index.ts",
+    "dev": "ts-node-dev --transpile-only --no-notify --ignore-watch node_modules src/index.ts",
     "knex:migrate": "knex --knexfile knexfile.ts migrate:latest",
     "knex:seed": "knex --knexfile knexfile.ts seed:run"
   },
@@ -26,7 +26,6 @@
     "@types/hapi__joi": "^17.1.4",
     "@types/multer": "^1.4.3",
     "ts-node": "^8.10.2",
-    "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^3.9.3"
+    "ts-node-dev": "^1.0.0-pre.44"
   }
 }
