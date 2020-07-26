@@ -1,14 +1,28 @@
 import React, { useEffect, useState, useCallback, ChangeEvent, FormEvent} from 'react';
-import './CreatePoint.css';
-import { Container } from './styles';
-import { Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
-import logo from '../../assets/img/logo.svg';
 import { api, axios } from '../../services/api';
 import { LeafletMouseEvent } from 'leaflet';
 import ModalChecked from '../../components/ModalChecked';
 import DropZone from '../../components/DropZone';
+import Header from '../../components/Header';
+import { 
+  Container, 
+  Link, 
+  Form,
+  Title,
+  Fieldset,
+  Legend,
+  FielGroup,
+  Field,
+  Input,
+  Select,
+  Label,
+  Button,
+  ItemsGrid,
+  Item,
+  MapContainer
+} from './styles';
 
 interface Item {
   id: number;
@@ -110,8 +124,7 @@ const CreatePoint: React.FC = () => {
 
     try {
       const response = await api.post('points', data);
-      console.log(response);
-      
+            
       if (response.data.id){
         setSubmitOk(true);
       }
@@ -140,71 +153,72 @@ const CreatePoint: React.FC = () => {
   }, [getCounty, selectedUf]);
 
   return (
-    <Container id="page-create-point">
-        <header>
-          <img src={logo} alt=""/>
+    <Container> 
+        <Header>
           <Link to="/">
             <FiArrowLeft />
-            Voltar para Home
+            <i>Voltar para Home</i>
           </Link>
-        </header>
+        </Header>
 
-        <form onSubmit={handleSubmit}>
-          <h1>Cadastro do <br/> ponto de coleta</h1>
+        <Form onSubmit={handleSubmit}>
+          <Title>Cadastro do <br/> ponto de coleta</Title>
 
           <DropZone onFileUpload={setSelectedFile} />
 
-          <fieldset>
-            <legend>
+          <Fieldset>
+            <Legend>
               <h2>Dados</h2>
-            </legend>
+            </Legend>
 
-            <div className="field">
-              <label htmlFor="name">Nome da entidade</label>
-              <input 
+            <Field>
+              <Label htmlFor="name">Nome da entidade</Label>
+              <Input 
                 type="text"
                 name="name"
                 id="name"
                 onChange={handleInputChange}/>
-            </div>
-            <div className="field-group">
-              <div className="field">
-                <label htmlFor="email">E-mail</label>
-                <input 
+            </Field>
+            <FielGroup>
+              <Field>
+                <Label htmlFor="email">E-mail</Label>
+                <Input 
                   type="email"
                   name="email"
                   id="email"
                   onChange={handleInputChange}/>
-              </div>
-              <div className="field">
-                <label htmlFor="whatsapp">Whatsapp</label>
-                <input 
+              </Field>
+              <Field>
+                <Label htmlFor="whatsapp">Whatsapp</Label>
+                <Input 
                   type="text"
                   name="whatsapp"
                   id="whatsapp"
                   onChange={handleInputChange}/>
-              </div>
-            </div>
-          </fieldset>
+              </Field>
+            </FielGroup>
+          </Fieldset>
 
-          <fieldset>
-            <legend>
+          <Fieldset>
+            <Legend>
               <h2>Endereço</h2>
               <span>Selecione um endereço no mapa</span>
-            </legend>
+            </Legend>
+            
+            <MapContainer>
+              <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
+                <TileLayer
+                  attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker position={selectedPosition}></Marker>
+              </Map>
+            </MapContainer>
 
-            <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
-              <TileLayer
-                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <Marker position={selectedPosition}></Marker>
-            </Map>
-
-            <div className="field-group">
-              <div className="field">
-                <label htmlFor="uf">Estado (UF)</label>
-                <select 
+            <FielGroup>
+              <Field>
+                <Label htmlFor="uf">Estado (UF)</Label>
+                <Select 
                   name="uf" 
                   id="uf" 
                   onChange={handleSelectUf}
@@ -214,11 +228,11 @@ const CreatePoint: React.FC = () => {
                   {ufs.map(uf => (
                     <option key={uf.id} value={uf.name}>{uf.name}</option>
                   ))}
-                </select>
-              </div>
-              <div className="field">
-                <label htmlFor="cidade">Cidade</label>
-                <select 
+                </Select>
+              </Field>
+              <Field>
+                <Label htmlFor="cidade">Cidade</Label>
+                <Select 
                   name="cidade" 
                   id="cidade" 
                   onChange={handleSelectCity} 
@@ -228,34 +242,34 @@ const CreatePoint: React.FC = () => {
                   {cities.map(city => (
                     <option key={city} value={city}>{city}</option>
                   ))}
-                </select>
-              </div>
-            </div>
-          </fieldset>
+                </Select>
+              </Field>
+            </FielGroup>
+          </Fieldset>
 
-          <fieldset>
-            <legend>
+          <Fieldset>
+            <Legend>
               <h2>Ítens de coleta</h2>
               <span>Selecione um ou mais ítens abaixo</span>
-            </legend>
+            </Legend>
 
-            <ul className="items-grid">
+            <ItemsGrid className="items-grid">
               {items.map(item => (
-                <li 
+                <Item 
                   key={item.id} 
                   onClick={() => handleSelectItem(item.id)}
                   className={selectedItems.includes(item.id) ? 'selected': '' }>
                   <img src={item.image_url} alt={item.name}/>
                   <span>{item.name}</span>
-                </li>
+                </Item>
               ))}
-            </ul>
-          </fieldset>
+            </ItemsGrid>
+          </Fieldset>
 
-          <button type="submit">
+          <Button type="submit">
             Cadastrar ponto de coleta
-          </button>
-        </form>
+          </Button>
+        </Form>
 
         {submitOk && <ModalChecked title="Cadastro concluído!" /> }
     </Container>

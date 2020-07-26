@@ -3,5 +3,5 @@ import Axios from 'axios';
 export const axios = Axios;
 
 export const api = Axios.create({
-    baseURL: 'http://localhost:3333/'
+    baseURL: process.env.REACT_APP_API_URL,
 });
