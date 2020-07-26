@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect, ChangeEvent } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, Text, Image, KeyboardAvoidingView, Platform, ImageBackground } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather as Icon} from '@expo/vector-icons';
-import { Container } from './styles';
+import { pickerSelectStyles, styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { axios } from '../../services/api';
 import RNPickerSelect from 'react-native-picker-select';
@@ -20,13 +20,14 @@ interface City {
 const Home: React.FC = () => {
     const navigation = useNavigation();
     const [ ufs, setUfs ] = useState<UF[]>([{label: '', value: 0}]);
-    const [ selectedUf, setSelectedUf ] = useState<string>('0');
+    const [ selectedUf, setSelectedUf ] = useState<number>(0);
     const [ cities, setCities ] = useState<City[]>([{label: 'Selecione um estado primeiro', value: 0}]);
     const [ selectedCity, setSelectedCity ] = useState<string>();
 
     const handleNavigationToPoints = () => {
         navigation.navigate('Points', {
-            uf: selectedUf, city: selectedCity
+            uf: ufs.find(uf => uf.value === selectedUf)?.label, 
+            city: selectedCity
         });
     }
 
@@ -56,7 +57,7 @@ const Home: React.FC = () => {
     }, [getUfs]);
 
     useEffect(() => {
-        if (selectedUf !== '0'){
+        if (selectedUf !== 0){
             getCity();
         }    
     }, [getCity, selectedUf]);
@@ -65,7 +66,7 @@ const Home: React.FC = () => {
         <KeyboardAvoidingView 
             style={{ flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-            <Container 
+            <ImageBackground 
                 source={require('../../assets/img/home-background.png')} 
                 style={styles.container}
                 imageStyle={{ width: 274, height: 368 }}
@@ -102,7 +103,7 @@ const Home: React.FC = () => {
                         style={pickerSelectStyles}
                         value={selectedCity}
                         useNativeAndroidPickerStyle={false}
-                        disabled={(selectedUf === '0') ? true : false}
+                        disabled={(selectedUf === 0) ? true : false}
                     />
                     <RectButton style={styles.button} onPress={handleNavigationToPoints} >
                         <View style={styles.buttonIcon} > 
@@ -113,105 +114,9 @@ const Home: React.FC = () => {
                         </Text>
                     </RectButton>
                 </View>
-            </Container>
+            </ImageBackground>
         </KeyboardAvoidingView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 32,
-    },
-
-    main: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-
-    title: {
-        color: '#322153',
-        fontSize: 32,
-        fontFamily: 'Ubuntu_700Bold',
-        maxWidth: 260,
-        marginTop: 64,
-    },
-
-    description: {
-        color: '#6C6C80',
-        fontSize: 16,
-        marginTop: 16,
-        fontFamily: 'Roboto_400Regular',
-        maxWidth: 260,
-        lineHeight: 24,
-    },
-
-    footer: {},
-
-    select: {},
-
-    input: {
-        height: 60,
-        backgroundColor: '#FFF',
-        borderRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 24,
-        fontSize: 16,
-    },
-
-    button: {
-        backgroundColor: '#34CB79',
-        height: 60,
-        flexDirection: 'row',
-        borderRadius: 10,
-        overflow: 'hidden',
-        alignItems: 'center',
-        marginTop: 8,
-    },
-
-    buttonIcon: {
-        height: 60,
-        width: 60,
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-    buttonText: {
-        flex: 1,
-        justifyContent: 'center',
-        textAlign: 'center',
-        color: '#FFF',
-        fontFamily: 'Roboto_500Medium',
-        fontSize: 16,
-    }
-});
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-        height: 60,
-        backgroundColor: '#FFF',
-        borderRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 24,
-        fontSize: 16,
-    },
-    inputAndroid: {
-    //   fontSize: 16,
-    //   paddingHorizontal: 10,
-    //   paddingVertical: 8,
-    //   borderWidth: 0.5,
-    //   borderColor: 'purple',
-    //   borderRadius: 8,
-    //   color: 'black',
-    //   paddingRight: 30, // to ensure the text is never behind the icon
-        height: 60,
-        backgroundColor: '#FFF',
-        borderRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 24,
-        fontSize: 16,
-    },
-});
 
 export default Home;
